@@ -10,7 +10,7 @@ ioBroker anlegen zu lassen.
 ### ToDo
 - besseres Datenpunktmanagment
 - Datenpunkt für "neue Warnung"
-- Überschrift, Link und Datum (formatieren) hinzufügen
+- Üerschrift, Link und Datum (formatieren) hinzufügen
 - try/catch für Fehler (bspw. Webserver nicht erreichbar)
 
 ### Installation
@@ -39,6 +39,10 @@ schedule("3 */12 * * *", polldata);
    
 ### Konfiguration
 Per Parameter direkt im Javascript.
+
+### Beispiel-Widget
+<img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/Bilder/Lebensmittelwarnung.png" alt="Widgetbild">
+Code 1:1 per *Import Widget* in die View einfügen.
 
 ## Versionen
     
