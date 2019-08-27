@@ -39,11 +39,15 @@ schedule("3 */12 * * *", polldata);
 Per Parameter direkt im Javascript.
 
 ### Beispiel-Widget
-<img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/blob/master/Bilder/Lebensmittelwarnung.png" alt="Widgetbild">
+<img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/blob/master/Bilder/Lebensmittelwarnung.png" alt="Widgetbild"/>
 Code 1:1 per *Import Widget* in die View einfügen.
 
 
 ## Versionen
+**V0.0.2 - zweite Alpha (27.08.2019)**
+```
+    + Titel, Datum und Link hinzugefügt
+```
     
 **V0.0.1 - erste Alpha (26.08.2019)**
 ```

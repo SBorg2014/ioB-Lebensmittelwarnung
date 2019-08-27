@@ -1,15 +1,20 @@
 
 /* 
-   2019 @ SBorg   
-   V0.0.1 - 26.08.2019  erste Alpha
+   2019 @ SBorg 
+   V0.0.2 - 27.08.2019 + Titel, Datum und Link  
+   V0.0.1 - 26.08.2019 erste Alpha
 
-   ToDo:    - besseres Datenpunktmanagment
-            - Datenpunkt für "neue Warnung"
-            - Überschrift, Link und Datum (formatieren) hinzufügen
-            - try/catch für Fehler (bspw. Webserver nicht erreichbar)
-   
    holt die Warnungen von Lebensmittelwarnung.de aus deren RSS-Feed
    benötigt 'rss-parser': cd /opt/iobroker && npm install --save rss-parser
+
+      ToDo: - besseres Datenpunktmanagment
+            - Datenpunkt für "neue Warnung"
+            - Datum noch formatieren)
+            - try/catch für Fehler (bspw. Webserver nicht erreichbar)
+            - filtern ermöglichen
+   
+   known issues: beim ersten starten etliche Fehler im Log (script stoppen und wieder starten, danach ist Ruhe)
+
 */
 
 //User-Einstellungen
@@ -34,6 +39,18 @@ if (!isState(DP, false)) {
                                                             type: "string",
                                                             role: "state"
                                                          }); 
+        createState(DP+'.Nummer_'+i+'.Titel', '', { name: "Titel der Warnung",
+                                                    type: "string",
+                                                    role: "state"
+                                                 });
+        createState(DP+'.Nummer_'+i+'.Link', '', { name: "Link zur Meldung",
+                                                    type: "string",
+                                                    role: "state"
+                                                 });
+        createState(DP+'.Nummer_'+i+'.Datum', '', { name: "Datum der Meldung",
+                                                    type: "string",
+                                                    role: "state"
+                                                 });                                                                                         
     }
 }
 
@@ -58,7 +75,12 @@ function polldata() {
  
   feed.items.forEach(function(entry) {
     if (debug === true) {console.log(entry.title + ': ' + entry.link + ' ' + entry.description + ' ' + entry.pubDate);}
-    if (i<Anzahl) {setState(DP+'.Nummer_'+i+'.Beschreibung', entry.description[0]);}
+    if (i<Anzahl) {
+        setState(DP+'.Nummer_'+i+'.Titel', entry.title);
+        setState(DP+'.Nummer_'+i+'.Link', entry.link);
+        setState(DP+'.Nummer_'+i+'.Datum', entry.pubDate);
+        setState(DP+'.Nummer_'+i+'.Beschreibung', entry.description[0]);
+    }
     i++;
   })
   console.log('Daten aktualisiert...');
