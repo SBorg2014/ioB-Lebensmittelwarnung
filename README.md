@@ -24,7 +24,6 @@ ausführen (ggf. den Pfad der ioBroker-Installation anpassen).
 Nun im ioB ein neues Javascript anlegen und den Inhalt von Lebensmittelwarnung.js hineinkopieren.
 Konfiguration des Skripts vornehmen:
 ```
-...
 //User-Einstellungen
 const Anzahl = 5;                                      //wie viele Warnungen sollen gelesen werden?
 const DP     = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
@@ -34,19 +33,19 @@ const URL    = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle
    die Minuten sollten auf eine "krumme" Zeit gesetzt werden, damit nicht jeder zur selben Zeit eine Anfrage an den
    Webserver von Lebensmittelwarnung.de schickt und diesen ggf. überlastet... */
 schedule("3 */12 * * *", polldata);
-...
 ```
    
 ### Konfiguration
 Per Parameter direkt im Javascript.
 
 ### Beispiel-Widget
-<img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/Bilder/Lebensmittelwarnung.png" alt="Widgetbild">
+<img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/blob/master/Bilder/Lebensmittelwarnung.png" alt="Widgetbild">
 Code 1:1 per *Import Widget* in die View einfügen.
+
 
 ## Versionen
     
-**V0.0.1 - erste Alpha**
+**V0.0.1 - erste Alpha (26.08.2019)**
 ```
     + Grundfunktion
 ```
