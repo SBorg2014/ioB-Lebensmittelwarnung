@@ -10,8 +10,8 @@ ioBroker anlegen zu lassen.
 ### ToDo
 - besseres Datenpunktmanagment
 - Datenpunkt für "neue Warnung"
-- Üerschrift, Link und Datum (formatieren) hinzufügen
 - try/catch für Fehler (bspw. Webserver nicht erreichbar)
+- filtern ermöglichen
 
 ### Installation
 Zuerst, falls es auf dem System noch nicht installiert ist, den benötigten RSS-Parser installieren. Ein Terminal
@@ -24,26 +24,35 @@ ausführen (ggf. den Pfad der ioBroker-Installation anpassen).
 Nun im ioB ein neues Javascript anlegen und den Inhalt von Lebensmittelwarnung.js hineinkopieren.
 Konfiguration des Skripts vornehmen:
 ```
-//User-Einstellungen
-const Anzahl = 5;                                      //wie viele Warnungen sollen gelesen werden?
-const DP     = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
+//START User-Einstellungen ***********************************************************************************************
 const debug  = false;                                  //debuggen [true/false]?
+const Anzahl = 5;                                      //wie viele Warnungen sollen gelesen werden?
+const BuLand = true;                                   //zeige Bundesländer an [true/false]?
+const DP     = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
 const URL    = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle/hessen.rss'; //URL des RSS-Feeds
 /* wann soll die Abfrage stattfinden (Minuten Stunde * * *)
    die Minuten sollten auf eine "krumme" Zeit gesetzt werden, damit nicht jeder zur selben Zeit eine Anfrage an den
    Webserver von Lebensmittelwarnung.de schickt und diesen ggf. überlastet... */
 schedule("3 */12 * * *", polldata);
+//END User-Einstellungen *************************************************************************************************
 ```
    
 ### Konfiguration
 Per Parameter direkt im Javascript.
 
 ### Beispiel-Widget
-<img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/blob/master/Bilder/Lebensmittelwarnung.png" alt="Widgetbild"/>
-Code 1:1 per *Import Widget* in die View einfügen.
+<img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/blob/master/Bilder/Lebensmittelwarnung.png" alt="Widgetbild" />
+Code 1:1 per "Import Widget" in die View einfügen.
 
 
 ## Versionen
+**V0.0.3 - switch to Beta (28.08.2019)**
+```
+    ~ Datum formatiert
+    + betroffene Bundesländer anzeigen? 
+    ~ Fehler beim ersten Start des Skripts behoben
+```
+
 **V0.0.2 - zweite Alpha (27.08.2019)**
 ```
     + Titel, Datum und Link hinzugefügt
