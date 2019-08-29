@@ -40,6 +40,11 @@ const Zeitplan = "3 */12 * * *";                         /* wann soll die Abfrag
    
 ### Konfiguration
 Per Parameter direkt im Javascript.
+Hinweis zum Filter: dieser unterstützt auch RegEx
+`'false'` = keinerlei Filter
+`'Flasche'` = einfacher Wortfilter; filtert nur Warnungen mit Wort "Flasche" heraus
+`/vegan.*/ig` = RegEx; filtert alles, egal ob Groß-/Kleinschreibung, was mit "vegan" anfängt und mit x-beliebigen 
+Zeichen weiter geht: Vegan, vegan, veganes, veganer...
 
 ### Beispiel-Widget
 <img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/blob/master/Bilder/Lebensmittelwarnung.png" alt="Widgetbild" />
@@ -49,9 +54,9 @@ Code 1:1 per "Import Widget" in die View einfügen.
 ## Versionen
 **V0.0.4 - 29.08.2019**
 ```
-	+ Fehlermanagement Webserver
+    + Fehlermanagement Webserver
     + Datenpunkt für "neue Warnung" / true bei neuer Warnung
-    + filtern eines Suchbegriffes (minimal)
+    + filtern eines Suchbegriffes
 ```
 
 **V0.0.3 - switch to Beta (28.08.2019)**
