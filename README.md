@@ -9,9 +9,8 @@ ioBroker anlegen zu lassen.
 
 ### ToDo
 - besseres Datenpunktmanagment
-- Datenpunkt für "neue Warnung"
-- try/catch für Fehler (bspw. Webserver nicht erreichbar)
-- filtern ermöglichen
+- beliebig viele filter ermöglichen
+- Bildergröße beschränken
 
 ### Installation
 Zuerst, falls es auf dem System noch nicht installiert ist, den benötigten RSS-Parser installieren. Ein Terminal
@@ -25,15 +24,17 @@ Nun im ioB ein neues Javascript anlegen und den Inhalt von Lebensmittelwarnung.j
 Konfiguration des Skripts vornehmen:
 ```
 //START User-Einstellungen ***********************************************************************************************
-const debug  = false;                                  //debuggen [true/false]?
-const Anzahl = 5;                                      //wie viele Warnungen sollen gelesen werden?
-const BuLand = true;                                   //zeige Bundesländer an [true/false]?
-const DP     = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
-const URL    = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle/hessen.rss'; //URL des RSS-Feeds
-/* wann soll die Abfrage stattfinden (Minuten Stunde * * *)
+const debug    = false;                                  //debuggen [true/false]?
+const Anzahl   = 5;                                      //wie viele Warnungen sollen gelesen werden?
+const BuLand   = true;                                   //zeige Bundesländer an [true/false]?
+const DP       = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
+const URL      = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle/hessen.rss'; //URL des RSS-Feeds
+var   FILTER   = 'false';                                //ausfiltern bestimmter Suchbegriffe oder 'false' für keinen Filter
+const Zeitplan = "3 */12 * * *";                         /* wann soll die Abfrage stattfinden (Minuten Stunde * * *)
    die Minuten sollten auf eine "krumme" Zeit gesetzt werden, damit nicht jeder zur selben Zeit eine Anfrage an den
-   Webserver von Lebensmittelwarnung.de schickt und diesen ggf. überlastet... */
-schedule("3 */12 * * *", polldata);
+   Webserver von Lebensmittelwarnung.de schickt und diesen ggf. überlastet... 
+   Hier: alle 12 Stunden UND 3 Minuten = 12:03 Uhr und 0:03 Uhr
+   siehe auch cron-Syntax z.B. unter https://de.wikipedia.org/wiki/Cron */
 //END User-Einstellungen *************************************************************************************************
 ```
    
@@ -46,6 +47,13 @@ Code 1:1 per "Import Widget" in die View einfügen.
 
 
 ## Versionen
+**V0.0.4 - 29.08.2019**
+```
+	+ Fehlermanagement Webserver
+    + Datenpunkt für "neue Warnung" / true bei neuer Warnung
+    + filtern eines Suchbegriffes (minimal)
+```
+
 **V0.0.3 - switch to Beta (28.08.2019)**
 ```
     ~ Datum formatiert
