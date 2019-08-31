@@ -1,6 +1,7 @@
 
 /* 
    (c)2019 by SBorg 
+   V0.0.5 - 31.08.2019 ~ Bilder als eigener Datenpunkt ausgelagert
    V0.0.4 - 29.08.2019 + Fehlermanagement Webserver
                        + Datenpunkt für "neue Warnung" / true bei neuer Warnung
                        + filtern eines Suchbegriffes (minimal)
@@ -15,7 +16,6 @@
 
       ToDo: - besseres Datenpunktmanagment
             - beliebig viele filter ermöglichen
-            - Bildergröße beschränken
    
    known issues: keine
 
@@ -27,7 +27,7 @@ const Anzahl   = 5;                                      //wie viele Warnungen s
 const BuLand   = true;                                   //zeige Bundesländer an [true/false]?
 const DP       = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
 const URL      = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle/hessen.rss'; //URL des RSS-Feeds
-var   FILTER   = 'false';                                //ausfiltern bestimmter Suchbegriffe oder 'false' für keinen Filter
+var   FILTER   = 'false';                                //ausfiltern bestimmter Suchbegriffe (auch RegEx) oder 'false' für keinen Filter
 const Zeitplan = "3 */12 * * *";                         /* wann soll die Abfrage stattfinden (Minuten Stunde * * *)
    die Minuten sollten auf eine "krumme" Zeit gesetzt werden, damit nicht jeder zur selben Zeit eine Anfrage an den
    Webserver von Lebensmittelwarnung.de schickt und diesen ggf. überlastet... 
@@ -67,7 +67,7 @@ function polldata() {
  
   try {
         let feed = await parser.parseURL(URL);
-        var i=0, Beschreibung;
+        var i=0, Beschreibung, Bild;
         if (debug === true) {console.log(feed.title);}
  
         feed.items.forEach(function(entry) {
@@ -78,11 +78,18 @@ function polldata() {
                 if (entry.description[0].search(FILTER) == -1) {
                     //Bundesländer anzeigen?
                     if (BuLand === true) { Beschreibung = entry.description[0] } else { Beschreibung = entry.description[0].substring(0, entry.description[0].lastIndexOf('<b>Betroffene Länder:</b>')); }
-
+                    //prüfen ob Bild vorhanden ist und ggf. parsen
+                    if (Beschreibung.search('<img src="http') != -1) {
+                        Bild = Beschreibung.substring(0, Beschreibung.indexOf('<br/>')+5);
+                        Beschreibung = Beschreibung.replace(Bild, ''); 
+                        Bild = Bild.substring(Bild.indexOf('"')+1, Bild.lastIndexOf('"'));
+                        Bild = Bild.substring(0, Bild.indexOf('"'));
+                    } else {Bild = '';}
                     setState(DP+'.Nummer_'+i+'.Titel', entry.title);
                     setState(DP+'.Nummer_'+i+'.Link', entry.link);
                     setState(DP+'.Nummer_'+i+'.Datum', entry.pubDate.substring(0, entry.pubDate.length-6));
                     setState(DP+'.Nummer_'+i+'.Beschreibung', Beschreibung);
+                    setState(DP+'.Nummer_'+i+'.Produktbild', Bild);
                     i++;
                 }
             }
@@ -148,7 +155,11 @@ async function createDP() {
         createState(DP+'.Nummer_'+i+'.Datum', '', { name: "Datum der Meldung",
                                                     type: "string",
                                                     role: "state"
-                                                 });                                                                                         
+                                                 });
+        createState(DP+'.Nummer_'+i+'.Produktbild', '', { name: "Produktbild zur Warnung",
+                                                    type: "string",
+                                                    role: "state"
+                                                 });
     }
     await Sleep(5000);
 }
