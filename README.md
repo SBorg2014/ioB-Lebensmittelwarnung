@@ -6,12 +6,12 @@
 Damit ist es möglich einen RSS-Feed von Lebensmittelwarnung.de auszulesen und entsprechende Datenpunkte im 
 ioBroker anlegen zu lassen.
 
-
+<br />
 ### ToDo
 - besseres Datenpunktmanagment
 - beliebig viele filter ermöglichen
-- Bildergröße beschränken
 
+<br />
 ### Installation
 Zuerst, falls es auf dem System noch nicht installiert ist, den benötigten RSS-Parser installieren. Ein Terminal
 öffnen und 
@@ -37,26 +37,29 @@ const Zeitplan = "3 */12 * * *";                         /* wann soll die Abfrag
    siehe auch cron-Syntax z.B. unter https://de.wikipedia.org/wiki/Cron */
 //END User-Einstellungen *************************************************************************************************
 ```
-   
+
+<br />   
 ### Konfiguration
-Per Parameter direkt im Javascript.<br>
-Hinweis zum Filter: dieser unterstützt auch RegEx<br>
-`'false'` = keinerlei Filter<br>
-`'Flasche'` = einfacher Wortfilter; filtert nur Warnungen mit Wort "Flasche" heraus<br>
+Per Parameter direkt im Javascript.<br />
+Hinweis zum Filter: dieser unterstützt auch RegEx<br />
+`'false'` = keinerlei Filter<br />
+`'Flasche'` = einfacher Wortfilter; filtert nur Warnungen mit Wort "Flasche" heraus<br />
 `/vegan.*/ig` = RegEx (keine ''!); filtert alles, egal ob Groß-/Kleinschreibung, was mit "vegan" anfängt und mit x-beliebigen 
 Zeichen weiter geht: Vegan, vegan, veganes, veganer...
 
+<br />
 ### Update von einer Vorgängerversion
 Skript vorher anhalten. __Alle__ Datenpunkte unter dem gewählten Datenpunkt löschen (im Beispiel also den 
 "Mülleimer" in den ioB-Objekten bei `javascript.0.VIS.Lebensmittelwarnung` betätigen). Skript kpl. ersetzen (ggf. 
 vorher den START/END User-Einstellungen Block sichern, dann braucht man nicht neu confen, aber kontrollieren ob 
 die Syntax noch stimmt bzw. neue Einträge hinzu gekommen oder weggefallen sind!). Skript wieder starten. 
 
+<br />
 ### Beispiel-Widget
 <img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/blob/master/Bilder/Lebensmittelwarnung.png" alt="Widgetbild" />
 Code 1:1 per "Import Widget" in die View einfügen.
 
-
+<br />
 ## Versionen
 **V0.0.5 - 31.08.2019**
 ```
@@ -87,6 +90,7 @@ Code 1:1 per "Import Widget" in die View einfügen.
     + Grundfunktion
 ```
 
+<br /><br /><br />
 ## License
 The MIT License (MIT)
 
