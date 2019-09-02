@@ -1,6 +1,9 @@
 
 /* 
    (c)2019 by SBorg 
+   V0.0.6 - 02.09.2019 ~ Wochentage und Monate auf dt. Datumsformat gepatcht
+                       + Produktart als Datenpunkt
+                       ~ Datum neu formatiert (Sekunden entfernt und "Uhr" hinzugefügt)
    V0.0.5 - 31.08.2019 ~ Bilder als eigener Datenpunkt ausgelagert
    V0.0.4 - 29.08.2019 + Fehlermanagement Webserver
                        + Datenpunkt für "neue Warnung" / true bei neuer Warnung
@@ -15,7 +18,7 @@
    benötigt 'rss-parser': cd /opt/iobroker && npm install --save rss-parser
 
       ToDo: - besseres Datenpunktmanagment
-            - beliebig viele filter ermöglichen
+            - beliebig viele Filter ermöglichen
    
    known issues: keine
 
@@ -67,7 +70,7 @@ function polldata() {
  
   try {
         let feed = await parser.parseURL(URL);
-        var i=0, Beschreibung, Bild;
+        var i=0, Beschreibung, Bild, Produktart;
         if (debug === true) {console.log(feed.title);}
  
         feed.items.forEach(function(entry) {
@@ -85,11 +88,50 @@ function polldata() {
                         Bild = Bild.substring(Bild.indexOf('"')+1, Bild.lastIndexOf('"'));
                         Bild = Bild.substring(0, Bild.indexOf('"'));
                     } else {Bild = '';}
+
+                    //Datum auf dt. Wochentage patchen
+                    let WT = entry.pubDate.substring(0, 3);
+                    switch (WT) {
+                        case "Mon":
+                            entry.pubDate = entry.pubDate.replace('Mon', 'Mo');
+                            break;
+                        case "Tue":
+                            entry.pubDate = entry.pubDate.replace('Tue', 'Di');
+                            break;    
+                        case "Wed":
+                            entry.pubDate = entry.pubDate.replace('Wed', 'Mi');
+                            break;
+                        case "Thu":
+                            entry.pubDate = entry.pubDate.replace('Thu', 'Do');
+                            break;
+                        case "Fri":
+                            entry.pubDate = entry.pubDate.replace('Fri', 'Fr');
+                            break;
+                        case "Sat":
+                            entry.pubDate = entry.pubDate.replace('Sat', 'Sa');
+                            break;
+                        case "Sun":
+                            entry.pubDate = entry.pubDate.replace('Sun', 'So');
+                            break;    
+                        default:
+                            console.log('Fehler beim Datum parsen...: '+WT);
+                    }
+
+                    //Monate auf dt. Format patchen
+                    if (entry.pubDate.search('Mar')) {entry.pubDate = entry.pubDate.replace('Mar', 'März');}
+                    if (entry.pubDate.search('May')) {entry.pubDate = entry.pubDate.replace('May', 'Mai');}
+                    if (entry.pubDate.search('Dec')) {entry.pubDate = entry.pubDate.replace('Dec', 'Dez');}
+
+                    //Produktart filtern
+                    Produktart = Beschreibung.substring(Beschreibung.indexOf('<b>Typ:</b>'));
+                    Produktart = Produktart.substring(12, Produktart.indexOf('<br/>'));
+
                     setState(DP+'.Nummer_'+i+'.Titel', entry.title);
                     setState(DP+'.Nummer_'+i+'.Link', entry.link);
-                    setState(DP+'.Nummer_'+i+'.Datum', entry.pubDate.substring(0, entry.pubDate.length-6));
+                    setState(DP+'.Nummer_'+i+'.Datum', entry.pubDate.substring(0, entry.pubDate.lastIndexOf(':'))+' Uhr');
                     setState(DP+'.Nummer_'+i+'.Beschreibung', Beschreibung);
                     setState(DP+'.Nummer_'+i+'.Produktbild', Bild);
+                    setState(DP+'.Nummer_'+i+'.Produktart', Produktart);
                     i++;
                 }
             }
@@ -157,6 +199,10 @@ async function createDP() {
                                                     role: "state"
                                                  });
         createState(DP+'.Nummer_'+i+'.Produktbild', '', { name: "Produktbild zur Warnung",
+                                                    type: "string",
+                                                    role: "state"
+                                                 });
+        createState(DP+'.Nummer_'+i+'.Produktart', '', { name: "Produktart zur Warnung",
                                                     type: "string",
                                                     role: "state"
                                                  });

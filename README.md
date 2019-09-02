@@ -9,7 +9,7 @@ ioBroker anlegen zu lassen.
 
 ### ToDo ###
 - besseres Datenpunktmanagment
-- beliebig viele filter ermöglichen
+- beliebig viele Filter ermöglichen
 
 
 ### Installation ###
@@ -61,6 +61,13 @@ Code 1:1 per "Import Widget" in die View einfügen.
 
 
 ## Versionen ##
+**V0.0.6 - 02.09.2019**
+```
+    ~ Wochentage und Monate auf dt. Datumsformat gepatcht
+    + Produktart als Datenpunkt
+    ~ Datum neu formatiert (Sekunden entfernt und "Uhr" hinzugefügt)
+```
+	
 **V0.0.5 - 31.08.2019**
 ```
     ~ Bilder als eigener Datenpunkt ausgelagert
