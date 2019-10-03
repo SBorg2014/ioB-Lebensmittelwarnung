@@ -50,7 +50,7 @@ Zeichen weiter geht: Vegan, vegan, veganes, veganer...
 2. Wir wollen alles was "bio" heißt filtern, egal in welcher Schreibweise
 3. Wir wollen alles was genau "Plastik" heißt filtern
 
-Der passende Filter würde dann so lauten: var Filter = `[/vegan.*/ig, /bio/ig, 'Plastik'];`<br>
+Der passende Filter würde dann so lauten: `var Filter = [/vegan.*/ig, /bio/ig, 'Plastik'];`<br>
 Hier sei auch auf die Dokumentation von RegEx verwiesen.
 
 
