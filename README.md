@@ -9,7 +9,6 @@ ioBroker anlegen zu lassen.
 
 ### ToDo ###
 - besseres Datenpunktmanagment
-- beliebig viele Filter ermöglichen
 
 
 ### Installation ###
