@@ -1,6 +1,7 @@
 
-/* 
+/*
    (c)2019 by SBorg 
+   V0.0.7 - 03.10.2019 ~ mehrere Filter möglich
    V0.0.6 - 02.09.2019 ~ Wochentage und Monate auf dt. Datumsformat gepatcht
                        + Produktart als Datenpunkt
                        ~ Datum neu formatiert (Sekunden entfernt und "Uhr" hinzugefügt)
@@ -18,7 +19,6 @@
    benötigt 'rss-parser': cd /opt/iobroker && npm install --save rss-parser
 
       ToDo: - besseres Datenpunktmanagment
-            - beliebig viele Filter ermöglichen
    
    known issues: keine
 
@@ -30,11 +30,11 @@ const Anzahl   = 5;                                      //wie viele Warnungen s
 const BuLand   = true;                                   //zeige Bundesländer an [true/false]?
 const DP       = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
 const URL      = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle/hessen.rss'; //URL des RSS-Feeds
-var   FILTER   = 'false';                                //ausfiltern bestimmter Suchbegriffe (auch RegEx) oder 'false' für keinen Filter
-const Zeitplan = "3 */12 * * *";                         /* wann soll die Abfrage stattfinden (Minuten Stunde * * *)
+var   FILTER   = ['false'];                              //ausfiltern bestimmter Suchbegriffe (auch RegEx) oder 'false' für keinen Filter
+const Zeitplan = "3 */8 * * *";                          /* wann soll die Abfrage stattfinden (Minuten Stunde * * *)
    die Minuten sollten auf eine "krumme" Zeit gesetzt werden, damit nicht jeder zur selben Zeit eine Anfrage an den
    Webserver von Lebensmittelwarnung.de schickt und diesen ggf. überlastet... 
-   Hier: alle 12 Stunden UND 3 Minuten = 12:03 Uhr und 0:03 Uhr
+   Hier: alle 8 Stunden UND 3 Minuten = 8:03 Uhr, 16:03 Uhr und 0:03 Uhr
    siehe auch cron-Syntax z.B. unter https://de.wikipedia.org/wiki/Cron */
 //END User-Einstellungen *************************************************************************************************
 
@@ -70,7 +70,7 @@ function polldata() {
  
   try {
         let feed = await parser.parseURL(URL);
-        var i=0, Beschreibung, Bild, Produktart;
+        var i=0, Treffer, Beschreibung, Bild, Produktart;
         if (debug === true) {console.log(feed.title);}
  
         feed.items.forEach(function(entry) {
@@ -78,7 +78,11 @@ function polldata() {
             if (i<Anzahl) {
                 
                 //Suchfilter auf Beschreibung anwenden
-                if (entry.description[0].search(FILTER) == -1) {
+                Treffer=0;
+                for(let anzFilter=0; anzFilter<FILTER.length; anzFilter++) { 
+                    if (entry.description[0].search(FILTER[anzFilter]) == -1) { Treffer++; } 
+                }
+                if (Treffer==FILTER.length) {
                     //Bundesländer anzeigen?
                     if (BuLand === true) { Beschreibung = entry.description[0] } else { Beschreibung = entry.description[0].substring(0, entry.description[0].lastIndexOf('<b>Betroffene Länder:</b>')); }
                     //prüfen ob Bild vorhanden ist und ggf. parsen
@@ -133,7 +137,7 @@ function polldata() {
                     setState(DP+'.Nummer_'+i+'.Produktbild', Bild);
                     setState(DP+'.Nummer_'+i+'.Produktart', Produktart);
                     i++;
-                }
+                } // end Filter
             }
         })
         console.log('Daten aktualisiert...');
