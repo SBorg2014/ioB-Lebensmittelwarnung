@@ -15,7 +15,7 @@ ioBroker anlegen zu lassen.
 Zuerst, falls es auf dem System noch nicht installiert ist, den benötigten RSS-Parser installieren. Ein Terminal
 öffnen und 
 ```
-cd /opt/ioBroker
+cd /opt/iobroker
 npm install --save rss-parser
 ```
 ausführen (ggf. den Pfad der ioBroker-Installation anpassen).
