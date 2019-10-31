@@ -1,6 +1,7 @@
 
 /*
    (c)2019 by SBorg 
+   V0.0.8 - 31.10.2019 + Meldungen für mehrere Bundesländer möglich
    V0.0.7 - 03.10.2019 ~ mehrere Filter möglich
    V0.0.6 - 02.09.2019 ~ Wochentage und Monate auf dt. Datumsformat gepatcht
                        + Produktart als Datenpunkt
@@ -29,8 +30,12 @@ const debug    = false;                                  //debuggen [true/false]
 const Anzahl   = 5;                                      //wie viele Warnungen sollen gelesen werden?
 const BuLand   = true;                                   //zeige Bundesländer an [true/false]?
 const DP       = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
-const URL      = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle/hessen.rss'; //URL des RSS-Feeds
 var   FILTER   = ['false'];                              //ausfiltern bestimmter Suchbegriffe (auch RegEx) oder 'false' für keinen Filter
+var   LAENDER  = [7];                                    /*Warnung für welches Bundesland/-länder; kommasepariert
+                                                          1=Baden-Württemberg, 2=Bayern, 3=Berlin, 4=Brandenburg, 5=Bremen, 
+                                                          6=Hamburg, 7=Hessen, 8=Mecklenburg-Vorpommern, 9=Niedersachsen, 
+                                                          10=Nordrhein-Westfalen, 11=Rheinland-Pfalz, 12=Saarland, 13=Sachsen, 
+                                                          14=Sachsen-Anhalt, 15=Schleswig-Holstein, 16=Thüringen oder 0=alle */
 const Zeitplan = "3 */8 * * *";                          /* wann soll die Abfrage stattfinden (Minuten Stunde * * *)
    die Minuten sollten auf eine "krumme" Zeit gesetzt werden, damit nicht jeder zur selben Zeit eine Anfrage an den
    Webserver von Lebensmittelwarnung.de schickt und diesen ggf. überlastet... 
@@ -43,6 +48,11 @@ const Zeitplan = "3 */8 * * *";                          /* wann soll die Abfrag
 //ab hier gibt es nix mehr zu ändern :)
 //firstStart?
 if (!isState(DP, false)) { createDP(); }
+
+//globale Nicht-User-Variablen
+const URL      = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle/alle_bundeslaender.rss'
+let Laender    = ['alle','Baden-Württemberg','Bayern','Berlin','Brandenburg','Bremen','Hamburg','Hessen','Mecklenburg-Vorpommern',
+                  'Niedersachsen','Nordrhein-Westfalen','Rheinland-Pfalz','Saarland','Sachsen','Sachsen-Anhalt', 'Schleswig-Holstein','Thüringen'];
 
 //Daten beim Start des Scripts abrufen
 polldata();
@@ -70,19 +80,26 @@ function polldata() {
  
   try {
         let feed = await parser.parseURL(URL);
-        var i=0, Treffer, Beschreibung, Bild, Produktart;
+        var i=0, Treffer, HitBuL, Beschreibung, Bild, Produktart;
         if (debug === true) {console.log(feed.title);}
  
         feed.items.forEach(function(entry) {
             if (debug === true) {console.log(entry.title + ': ' + entry.link + ' ' + entry.description + ' ' + entry.pubDate);}
             if (i<Anzahl) {
                 
+               //Filter Bundesländer
+               HitBuL=false;
+               for(let anzBuLand=0; anzBuLand<LAENDER.length; anzBuLand++) { 
+                  if (entry.description[0].indexOf(Laender[LAENDER[anzBuLand]], entry.description[0].lastIndexOf('<b>Betroffene Länder:</b>')) != -1) { HitBuL=true; }
+               }
+               if (HitBuL === true || LAENDER[0] == 0) { 
+               
                 //Suchfilter auf Beschreibung anwenden
                 Treffer=0;
                 for(let anzFilter=0; anzFilter<FILTER.length; anzFilter++) { 
                     if (entry.description[0].search(FILTER[anzFilter]) == -1) { Treffer++; } 
                 }
-                if (Treffer==FILTER.length) {
+                if (Treffer==FILTER.length || FILTER[0] == "false") {
                     //Bundesländer anzeigen?
                     if (BuLand === true) { Beschreibung = entry.description[0] } else { Beschreibung = entry.description[0].substring(0, entry.description[0].lastIndexOf('<b>Betroffene Länder:</b>')); }
                     //prüfen ob Bild vorhanden ist und ggf. parsen
@@ -124,6 +141,7 @@ function polldata() {
                     //Monate auf dt. Format patchen
                     if (entry.pubDate.search('Mar')) {entry.pubDate = entry.pubDate.replace('Mar', 'März');}
                     if (entry.pubDate.search('May')) {entry.pubDate = entry.pubDate.replace('May', 'Mai');}
+                    if (entry.pubDate.search('Oct')) {entry.pubDate = entry.pubDate.replace('Oct', 'Okt');}
                     if (entry.pubDate.search('Dec')) {entry.pubDate = entry.pubDate.replace('Dec', 'Dez');}
 
                     //Produktart filtern
@@ -137,15 +155,17 @@ function polldata() {
                     setState(DP+'.Nummer_'+i+'.Produktbild', Bild);
                     setState(DP+'.Nummer_'+i+'.Produktart', Produktart);
                     i++;
-                } // end Filter
-            }
+                } // end Filter Produkte
+               } //end Filter Bundesländer
+            } // end Anzahl
         })
         console.log('Daten aktualisiert...');
     } catch (e) {
         console.warn('Fehler beim Datenabruf...');
         return;
         }
-   })(); //end async
+
+    })(); //end async
 } //end func
 
 /*

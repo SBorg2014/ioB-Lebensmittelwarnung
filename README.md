@@ -27,8 +27,12 @@ const debug    = false;                                  //debuggen [true/false]
 const Anzahl   = 5;                                      //wie viele Warnungen sollen gelesen werden?
 const BuLand   = true;                                   //zeige Bundesländer an [true/false]?
 const DP       = 'javascript.0.VIS.Lebensmittelwarnung'; //Datenpunkt
-const URL      = 'https://www.lebensmittelwarnung.de/bvl-lmw-de/opensaga/feed/alle/hessen.rss'; //URL des RSS-Feeds
-var   FILTER   = ['false'];                              //ausfiltern bestimmter Suchbegriffe oder 'false' für keinen Filter
+var   FILTER   = ['false'];                              //ausfiltern bestimmter Suchbegriffe (auch RegEx) oder 'false' für keinen Filter
+var   LAENDER  = [7];                                    /*Warnung für welches Bundesland/-länder; kommasepariert
+                                                          1=Baden-Württemberg, 2=Bayern, 3=Berlin, 4=Brandenburg, 5=Bremen, 
+                                                          6=Hamburg, 7=Hessen, 8=Mecklenburg-Vorpommern, 9=Niedersachsen, 
+                                                          10=Nordrhein-Westfalen, 11=Rheinland-Pfalz, 12=Saarland, 13=Sachsen, 
+                                                          14=Sachsen-Anhalt, 15=Schleswig-Holstein, 16=Thüringen oder 0=alle */
 const Zeitplan = "3 */8 * * *";                          /* wann soll die Abfrage stattfinden (Minuten Stunde * * *)
    die Minuten sollten auf eine "krumme" Zeit gesetzt werden, damit nicht jeder zur selben Zeit eine Anfrage an den
    Webserver von Lebensmittelwarnung.de schickt und diesen ggf. überlastet... 
@@ -52,6 +56,7 @@ Zeichen weiter geht: Vegan, vegan, veganes, veganer...
 
 Der passende Filter würde dann so lauten: `var Filter = [/vegan.*/ig, /bio/ig, 'Plastik'];`<br>
 Hier sei auch auf die Dokumentation von RegEx verwiesen.
+Bundesländer: z.B. für *Hessen* und *Berlin* `var   LAENDER  = [3,7];`
 
 
 ### Update von einer Vorgängerversion ###
@@ -63,10 +68,15 @@ die Syntax noch stimmt bzw. neue Einträge hinzu gekommen oder weggefallen sind!
 
 ### Beispiel-Widget ###
 <img src="https://github.com/SBorg2014/ioB-Lebensmittelwarnung/blob/master/Bilder/Lebensmittelwarnung.png" alt="Widgetbild">
-Code 1:1 per "Import Widget" in die View einfügen.
+Dateiinhalt von Beispiel-Widget.txt 1:1 per "Import Widget" in die View einfügen.
 
 
 ## Versionen ##
+**V0.0.8 - 31.10.2019**
+``` 
+    + Meldungen für mehrere Bundesländer möglich
+```
+
 **V0.0.7 - 03.10.2019**
 ``` 
     ~ mehrere Filter möglich
