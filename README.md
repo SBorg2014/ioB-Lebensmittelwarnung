@@ -72,9 +72,9 @@ Dateiinhalt von Beispiel-Widget.txt 1:1 per "Import Widget" in die View einfüge
 
 
 ### Algemeines ###
-__Filter:__ was hier angegeben wird erscheint *nicht* als Treffer, sondern wird verworfen.
+__Filter:__ was hier angegeben wird erscheint *nicht* als Treffer, sondern wird verworfen.<br>
 __Anzahl=5:__ bedeutet, es werden solange Meldungen gelesen, bis die eingestellte Anzahl von 5 erreicht wird. 
-Jüngste zuerst (LIFO).
+Jüngste zuerst (LIFO).<br>
 
 
 ## Versionen ##
